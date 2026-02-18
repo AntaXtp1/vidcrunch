@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VidCrunch — Compress Video</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Syne+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/upload.css" />
+</head>
+<body>
+
+  <!-- BACKGROUND GRID -->
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <!-- NAV -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-icon">▶</span>
+      VidCrunch
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link active">Compress</a>
+      <a href="history.html" class="nav-link">History</a>
+    </div>
+    <div class="nav-auth" id="navAuth">
+      <!-- Diisi oleh JS -->
+    </div>
+  </nav>
+
+  <main class="main-content">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-eyebrow">
+        <span class="dot pulse"></span>
+        <span>Powered by Cloudinary</span>
+      </div>
+      <h1 class="hero-title">
+        Compress.<br/>
+        <span class="accent-text">Resize.</span><br/>
+        Done.
+      </h1>
+      <p class="hero-sub">Upload video lo, pilih kualitas & resolusi, download hasilnya. Simpel. Cepet. Gratis.</p>
+    </section>
+
+    <!-- AUTH GATE -->
+    <div class="auth-gate" id="authGate">
+      <div class="auth-gate-inner">
+        <p class="auth-gate-icon">🔒</p>
+        <h3>Login dulu, baru bisa compress</h3>
+        <p>History lo tersimpan aman per akun. Gak ada login = gak ada history = percuma.</p>
+        <div class="auth-gate-btns">
+          <button class="btn-primary" id="gateLoginBtn">Login</button>
+          <button class="btn-ghost" id="gateRegisterBtn">Daftar Gratis</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- UPLOAD SECTION (hidden until logged in) -->
+    <section class="upload-section" id="uploadSection" style="display:none;">
+
+      <!-- UPLOAD ZONE -->
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" id="fileInput" accept="video/*" hidden />
+        <div class="upload-zone-content">
+          <div class="upload-icon-wrap">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <h2 class="upload-title">Drop video di sini</h2>
+          <p class="upload-sub">atau <span class="link-text" id="browseBtn">klik untuk browse</span></p>
+          <div class="upload-formats">MP4 · MOV · AVI · WebM · MKV</div>
+        </div>
+      </div>
+
+      <!-- FILE PREVIEW -->
+      <div class="file-preview" id="filePreview" style="display:none;">
+        <div class="preview-thumb">
+          <video id="videoPreview" muted playsinline></video>
+          <div class="preview-play">▶</div>
+        </div>
+        <div class="preview-info">
+          <div class="preview-filename" id="previewFilename">video.mp4</div>
+          <div class="preview-size" id="previewSize">0 MB</div>
+          <div class="preview-meta" id="previewMeta">—</div>
+        </div>
+        <button class="preview-remove" id="removeFile" title="Hapus file">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="settings-panel">
+        <div class="settings-row">
+          <!-- Quality -->
+          <div class="setting-block">
+            <div class="setting-header">
+              <label class="setting-label">Kualitas</label>
+              <div class="quality-badge" id="qualityBadge">Balanced</div>
+            </div>
+            <div class="quality-number-row">
+              <span class="quality-number" id="qualityNumber">65</span>
+              <span class="quality-unit">/ 100</span>
+            </div>
+            <input class="slider" type="range" id="qualitySlider" min="1" max="100" value="65" />
+            <div class="quality-scale">
+              <span>Kecil</span>
+              <span>Balanced</span>
+              <span>Original</span>
+            </div>
+          </div>
+
+          <!-- Resolution -->
+          <div class="setting-block">
+            <div class="setting-header">
+              <label class="setting-label">Resolusi Output</label>
+            </div>
+            <div class="resolution-options" id="resolutionOptions">
+              <button class="res-btn" data-value="original">Original</button>
+              <button class="res-btn active" data-value="1920x1080">1080p</button>
+              <button class="res-btn" data-value="1280x720">720p</button>
+              <button class="res-btn" data-value="854x480">480p</button>
+              <button class="res-btn" data-value="640x360">360p</button>
+            </div>
+            <p class="setting-hint">Resolusi lebih kecil = file jauh lebih ringan</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMPRESS BTN -->
+      <button class="btn-compress" id="compressBtn" disabled>
+        <span class="btn-compress-icon">⚡</span>
+        <span id="compressBtnText">COMPRESS VIDEO</span>
+      </button>
+
+      <!-- PROGRESS -->
+      <div class="progress-card" id="progressCard" style="display:none;">
+        <div class="progress-top">
+          <span class="progress-label" id="progressLabel">Mengupload...</span>
+          <span class="progress-pct" id="progressPct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-steps">
+          <span class="step" id="step1">① Upload</span>
+          <span class="step-arrow">→</span>
+          <span class="step" id="step2">② Proses</span>
+          <span class="step-arrow">→</span>
+          <span class="step" id="step3">③ Simpan</span>
+        </div>
+      </div>
+
+      <!-- ERROR -->
+      <div class="error-banner" id="errorBanner" style="display:none;"></div>
+
+      <!-- RESULT -->
+      <div class="result-card" id="resultCard" style="display:none;">
+        <div class="result-badge">✅ Berhasil Dikompres!</div>
+
+        <div class="size-compare">
+          <div class="size-before">
+            <div class="size-label">Sebelum</div>
+            <div class="size-value" id="sizeBefore">—</div>
+          </div>
+          <div class="size-arrow">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </div>
+          <div class="size-after">
+            <div class="size-label">Sesudah</div>
+            <div class="size-value accent" id="sizeAfter">—</div>
+          </div>
+        </div>
+
+        <div class="savings-row" id="savingsRow">
+          <span class="savings-chip" id="savingsChip">Hemat 0%</span>
+          <span class="savings-hint">dari ukuran original</span>
+        </div>
+
+        <a class="btn-download" id="downloadBtn" href="#" target="_blank" download>
+          ⬇ Download Hasil
+        </a>
+
+        <button class="btn-ghost btn-compress-new" id="compressNewBtn">
+          + Compress Video Baru
+        </button>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- AUTH MODAL -->
+  <div class="modal-overlay" id="modalOverlay" style="display:none;">
+    <div class="modal" id="authModal">
+      <button class="modal-close" id="modalClose">✕</button>
+
+      <div class="modal-tabs">
+        <button class="modal-tab active" id="tabLogin">Login</button>
+        <button class="modal-tab" id="tabRegister">Daftar</button>
+      </div>
+
+      <!-- Login Form -->
+      <div class="modal-form" id="formLogin">
+        <h3 class="modal-title">Welcome back 👋</h3>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="loginEmail" placeholder="email@lo.com" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" />
+        </div>
+        <div class="modal-error" id="loginError" style="display:none;"></div>
+        <button class="btn-primary" id="loginSubmit">Login</button>
+      </div>
+
+      <!-- Register Form -->
+      <div class="modal-form" id="formRegister" style="display:none;">
+        <h3 class="modal-title">Bikin akun gratis 🚀</h3>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="registerEmail" placeholder="email@lo.com" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="registerPassword" placeholder="min. 6 karakter" />
+        </div>
+        <div class="modal-error" id="registerError" style="display:none;"></div>
+        <button class="btn-primary" id="registerSubmit">Daftar Sekarang</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Supabase SDK via CDN — WAJIB sebelum api.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/upload.js"></script>
+</body>
+</html>

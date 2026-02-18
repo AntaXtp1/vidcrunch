@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VidCrunch — History</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Syne+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/history.css" />
+</head>
+<body>
+
+  <!-- BACKGROUND -->
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <!-- NAV -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-icon">▶</span>
+      VidCrunch
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Compress</a>
+      <a href="history.html" class="nav-link active">History</a>
+    </div>
+    <div class="nav-auth" id="navAuth">
+      <!-- Diisi oleh JS -->
+    </div>
+  </nav>
+
+  <main class="main-content">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Compress History</h1>
+        <p class="page-sub" id="userEmail">—</p>
+      </div>
+      <div class="header-stats" id="headerStats" style="display:none;">
+        <div class="stat-chip">
+          <span class="stat-number" id="totalCompressed">0</span>
+          <span class="stat-label">Video</span>
+        </div>
+        <div class="stat-chip accent">
+          <span class="stat-number" id="totalSaved">0 MB</span>
+          <span class="stat-label">Hemat</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUTH GUARD -->
+    <div class="auth-guard" id="authGuard">
+      <div class="empty-state">
+        <div class="empty-icon">🔐</div>
+        <h3>Lo belum login, bro</h3>
+        <p>History hanya bisa dilihat setelah login. Masuk dulu yuk.</p>
+        <button class="btn-primary" id="guardLoginBtn">Login Sekarang</button>
+      </div>
+    </div>
+
+    <!-- HISTORY CONTENT (hidden until auth) -->
+    <div class="history-content" id="historyContent" style="display:none;">
+
+      <!-- FILTER BAR -->
+      <div class="filter-bar">
+        <div class="search-wrap">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input class="search-input" type="text" id="searchInput" placeholder="Cari nama file..." />
+        </div>
+        <select class="filter-select" id="sortSelect">
+          <option value="newest">Terbaru</option>
+          <option value="oldest">Terlama</option>
+          <option value="biggest-saving">Penghematan Terbesar</option>
+          <option value="biggest-file">File Terbesar</option>
+        </select>
+        <button class="btn-ghost btn-sm" id="refreshBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+            <path d="M21 3v5h-5"/>
+            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+            <path d="M8 16H3v5"/>
+          </svg>
+          Refresh
+        </button>
+      </div>
+
+      <!-- LOADING STATE -->
+      <div class="loading-state" id="loadingState">
+        <div class="loader-ring"></div>
+        <p>Ngambil data...</p>
+      </div>
+
+      <!-- EMPTY STATE -->
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <div class="empty-icon">🎬</div>
+        <h3>Belum ada compress sama sekali</h3>
+        <p>Lo belum pernah compress video. Buruan lah, ngapain kesini.</p>
+        <a href="index.html" class="btn-primary">Compress Sekarang</a>
+      </div>
+
+      <!-- HISTORY GRID -->
+      <div class="history-grid" id="historyGrid">
+        <!-- Card diisi oleh JS -->
+      </div>
+
+      <!-- LOAD MORE -->
+      <div class="load-more-wrap" id="loadMoreWrap" style="display:none;">
+        <button class="btn-ghost" id="loadMoreBtn">Tampilkan Lebih Banyak</button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- DELETE CONFIRM MODAL -->
+  <div class="modal-overlay" id="deleteOverlay" style="display:none;">
+    <div class="modal modal-sm">
+      <h3 class="modal-title">Hapus history ini?</h3>
+      <p style="color:var(--muted); font-size:14px; margin-bottom:24px;">
+        File di Cloudinary tetap ada, cuma record history yang dihapus.
+      </p>
+      <div class="modal-actions">
+        <button class="btn-ghost" id="deleteCancelBtn">Batal</button>
+        <button class="btn-danger" id="deleteConfirmBtn">Ya, Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTH MODAL (sama kayak di index.html) -->
+  <div class="modal-overlay" id="modalOverlay" style="display:none;">
+    <div class="modal" id="authModal">
+      <button class="modal-close" id="modalClose">✕</button>
+      <div class="modal-tabs">
+        <button class="modal-tab active" id="tabLogin">Login</button>
+        <button class="modal-tab" id="tabRegister">Daftar</button>
+      </div>
+      <div class="modal-form" id="formLogin">
+        <h3 class="modal-title">Welcome back 👋</h3>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="loginEmail" placeholder="email@lo.com" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" />
+        </div>
+        <div class="modal-error" id="loginError" style="display:none;"></div>
+        <button class="btn-primary" id="loginSubmit">Login</button>
+      </div>
+      <div class="modal-form" id="formRegister" style="display:none;">
+        <h3 class="modal-title">Bikin akun gratis 🚀</h3>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="registerEmail" placeholder="email@lo.com" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="registerPassword" placeholder="min. 6 karakter" />
+        </div>
+        <div class="modal-error" id="registerError" style="display:none;"></div>
+        <button class="btn-primary" id="registerSubmit">Daftar Sekarang</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase SDK via CDN — WAJIB sebelum api.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/history.js"></script>
+</body>
+</html>
