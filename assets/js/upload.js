@@ -351,8 +351,33 @@ function showResult({ originalSize, compressedSize, compressedUrl, filename }) {
   sizeAfter.textContent   = formatBytes(compressedSize);
   savingsChip.textContent = savings > 0 ? `Hemat ${savings}% 🎉` : 'Ukuran mirip — coba turunin kualitas';
 
-  downloadBtn.href = compressedUrl;
-  downloadBtn.setAttribute('download', 'compressed_' + filename);
+  // ── Download via blob (gak redirect ke Cloudinary) ──
+  downloadBtn.href = '#';
+  downloadBtn.onclick = async (e) => {
+    e.preventDefault();
+    downloadBtn.textContent = '⏳ Menyiapkan download...';
+    downloadBtn.style.pointerEvents = 'none';
+
+    try {
+      const res = await fetch(compressedUrl);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = 'compressed_' + filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      // Fallback: buka di tab baru kalau fetch gagal (CORS)
+      window.open(compressedUrl, '_blank');
+    } finally {
+      downloadBtn.textContent = '⬇ Download Hasil';
+      downloadBtn.style.pointerEvents = '';
+    }
+  };
 
   resultCard.style.display = 'block';
   resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
