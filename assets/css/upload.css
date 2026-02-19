@@ -300,8 +300,9 @@
 
 .settings-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1.4fr;
   gap: 40px;
+  align-items: start;
 }
 
 .setting-block {
@@ -411,7 +412,7 @@
 }
 
 .res-btn {
-  padding: 7px 14px;
+  padding: 9px 16px;
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -421,6 +422,7 @@
   cursor: pointer;
   transition: var(--transition);
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .res-btn:hover {
@@ -439,7 +441,9 @@
   font-size: 12px;
   color: var(--muted);
   font-family: var(--font-mono);
-  margin-top: 4px;
+  margin-top: 8px;
+  line-height: 1.5;
+  word-break: break-word;
 }
 
 /* ─── Compress Button ─── */
