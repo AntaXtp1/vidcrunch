@@ -99,7 +99,7 @@
 .upload-zone {
   border: 2px dashed var(--border);
   border-radius: var(--radius-lg);
-  padding: 64px 40px;
+  padding: 80px 40px;
   text-align: center;
   cursor: pointer;
   transition: var(--transition);
@@ -141,15 +141,15 @@
 }
 
 .upload-icon-wrap {
-  width: 72px;
-  height: 72px;
+  width: 80px;
+  height: 80px;
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 20px;
+  margin: 0 auto 24px;
   color: var(--accent);
   transition: var(--transition);
 }
@@ -294,14 +294,14 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 24px;
+  padding: 32px;
   margin-bottom: 20px;
 }
 
 .settings-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 28px;
+  gap: 40px;
 }
 
 .setting-block {
@@ -445,7 +445,7 @@
 /* ─── Compress Button ─── */
 .btn-compress {
   width: 100%;
-  padding: 18px 32px;
+  padding: 22px 32px;
   background: linear-gradient(135deg, var(--accent) 0%, #9b8cf9 100%);
   color: #fff;
   font-family: var(--font-display);
